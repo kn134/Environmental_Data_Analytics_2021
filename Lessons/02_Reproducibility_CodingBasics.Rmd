@@ -197,6 +197,7 @@ recipe3 <- function(x, f){
 doublecomplexmeal <- recipe3(x = 5, f = 2)
 doublecomplexmeal
 doublecomplexmeal$mix1
+
 ```
 
 Make a recipe based on the ingredients you have
