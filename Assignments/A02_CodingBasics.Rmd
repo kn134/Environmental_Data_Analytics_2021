@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2: Coding Basics"
-author: "Student Name"
+author: "Karly Nocera"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -32,10 +32,21 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r}
 #1. 
+### sequence (from, to, by)
+
+seq_by4 = seq(1, 100, 4)
+seq_by4
 
 #2. 
+### use the mean and median functions on the named sequence
+
+mean(seq_by4)
+median(seq_by4)
 
 #3. 
+### > asks if mean is greater than median 
+
+mean(seq_by4) > median(seq_by4)
 
 ```
 
@@ -51,11 +62,34 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r}
 
+# 5. & 6.
+### use command <- c() to create vector
+
+students <- c("jack", "diane", "bruce", "clarence")
+# character vector
+# use "" for string/names
+
+score <- c(46, 89, 72, 98) 
+# numeric vector
+
+test_pf <- c(FALSE, TRUE, TRUE, TRUE)
+# logical vector
+# manually enter based on score
+
+
+#7. & 8.
+
+school_df <- data.frame("Student" = students, "Score" = score, "Passed" = test_pf)
+### use command data.frame to assign "column names" to vector
+
+school_df
+### final data frame
+
 ```
 
 9. QUESTION: How is this data frame different from a matrix?
 
-> Answer: 
+> Answer: Whereas a matrix is made of all the same element, this data frame is not uniform in type, it includes string/character, numeric, and logic entries.
 
 10. Create a function with an if/else statement. Your function should determine whether a test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. Hint: Use `print`, not `return`. The name of your function should be informative.
 
@@ -63,8 +97,19 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 
 ```{r}
 
+#11.
+
+### create function x called "pass_grade" such that if x is greater than 50 print as True, otherwise print as false
+
+pass_grade <- function(x){
+  ifelse(x>50, "True", "False")
+}
+
+student_test_result <- pass_grade(score) #score is the vector of student scores to evaluate
+student_test_result
+
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: 
+> Answer: ifelse worked because it responds to a logical vector whereas if and else only react to one logical element (runs the function for only the first score rather than each).
