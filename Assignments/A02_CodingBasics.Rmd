@@ -99,7 +99,8 @@ school_df
 
 #11.
 
-### create function x called "pass_grade" such that if x is greater than 50 print as True, otherwise print as false
+### create function x called "pass_grade" such that if x is greater than 
+#   50 print as True, otherwise print as false
 
 pass_grade <- function(x){
   ifelse(x>50, "True", "False")
