@@ -24,7 +24,7 @@ The completed exercise is due on <>.
 ```{r,  message = FALSE}
 
 getwd() 
-#Note: Every time I try to setwd() it reverts back to Assignment folder so have to use absolute path for files
+#Note: Every time I try to setwd() it reverts back to Assignment folder so had to use absolute path for files.
 
 library(tidyverse)
 
