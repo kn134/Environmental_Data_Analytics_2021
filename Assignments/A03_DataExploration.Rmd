@@ -25,6 +25,7 @@ The completed exercise is due on <>.
 
 getwd() 
 #Note: Every time I try to setwd() it reverts back to Assignment folder so had to use absolute path for files.
+# fixed -- Tools dropdown menu >> Global Options >> R Markdown section >> change Evaluate Chunks to Project instead of Document
 
 library(tidyverse)
 
