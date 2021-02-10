@@ -22,7 +22,7 @@ Why is data exploration our first step in analyzing a dataset? What information 
 ## Import data and view summaries
 
 ```{r, message = FALSE}
-# 1. Set up your working directory
+# 1. Set up your working directory (setwd() if you want to change it)
 getwd()
 
 # 2. Load packages
@@ -35,7 +35,7 @@ USGS.flow.data <- read.csv("./Data/Processed/USGS_Site02085000_Flow_Processed.cs
 # Alternate option: click on data frame in Environment tab
 
 colnames(USGS.flow.data)
-str(USGS.flow.data)
+str(USGS.flow.data) 
 dim(USGS.flow.data)
 
 # Check our date column
@@ -65,7 +65,7 @@ ggplot(USGS.flow.data, aes(x = discharge.mean.approval)) +
 ### Histogram (function: geom_histogram)
 
 Visualize distributions of values for continuous numerical variables. What is happening in each line of code? Insert a comment above each line.
-
+ 
 ```{r, fig.height = 3, fig.width = 4}
 #
 ggplot(USGS.flow.data) +
@@ -84,7 +84,7 @@ ggplot(USGS.flow.data, aes(x = discharge.mean)) +
   geom_histogram(binwidth = 10) + 
   scale_x_continuous(limits = c(0, 500))
   
-#
+ #
 ggplot(USGS.flow.data) +
   geom_histogram(aes(x = gage.height.mean))
 
@@ -96,8 +96,10 @@ An alternate to a histogram is a frequency polygon graph (distributions of value
 ```{r, fig.height = 3, fig.width = 4}
 #
 ggplot(USGS.flow.data) +
+  # to see overlay:
+  #geom_histogram(aes(x = gage.height.mean), bins = 50) +
   geom_freqpoly(aes(x = gage.height.mean), bins = 50) +
-  geom_freqpoly(aes(x = gage.height.min), bins = 50, color = "darkgray") +
+  geom_freqpoly(aes(x = gage.height.min), bins = 50, color = "red") +
   geom_freqpoly(aes(x = gage.height.max), bins = 50,  lty = 2) +
   scale_x_continuous(limits = c(0, 10))
 
