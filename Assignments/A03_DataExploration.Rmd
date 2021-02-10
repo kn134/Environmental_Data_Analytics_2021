@@ -70,7 +70,8 @@ dim(neonics)
 
 6. Using the `summary` function on the "Effects" column, determine the most common effects that are studied. Why might these effects specifically be of interest?
 ```{r}
-neonics$Effect <- as.factor(neonics$Effect)
+#neonics$Effect <- as.factor(neonics$Effect)
+# uncomment if not reading in stringAsFactor
 
 summary(neonics$Effect)
 ```
@@ -80,7 +81,8 @@ summary(neonics$Effect)
 7. Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.
 
 ```{r}
-neonics$Species.Common.Name <- as.factor(neonics$Species.Common.Name)
+#neonics$Species.Common.Name <- as.factor(neonics$Species.Common.Name)
+# uncomment if not reading in stringAsFactor
 
 summary(neonics$Species.Common.Name)
 ```
