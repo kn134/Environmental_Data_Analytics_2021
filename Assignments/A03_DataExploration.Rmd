@@ -26,11 +26,15 @@ The completed exercise is due on <>.
 getwd() 
 #Note: Every time I try to setwd() it reverts back to Assignment folder so had to use absolute path for files.
 # fixed -- Tools dropdown menu >> Global Options >> R Markdown section >> change Evaluate Chunks to Project instead of Document
+# OR Knit >> Knit Directory >> Project (because working within grey knit markdown)
 
+# install(tidyverse)
 library(tidyverse)
 
-neonics <- read.csv("Z:/Environmental_Data_Analytics_2021/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
-litter <- read.csv("Z:/Environmental_Data_Analytics_2021/Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
+neonics <- read.csv("Z:/Environmental_Data_Analytics_2021/Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv", stringsAsFactors = TRUE)
+litter <- read.csv("Z:/Environmental_Data_Analytics_2021/Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv", stringsAsFactors = TRUE)
+
+# include stringAsFactors = True to avoid reading in as characters
 
 ```
 
