@@ -26,7 +26,32 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 ```{r, message = FALSE}
 #1
 
+getwd()
+library(tidyverse)
+library(lubridate)
+
+EPAair_O3_2018 <- read.csv("~/Environmental_Data_Analytics_2021/Data/Raw/EPAair_O3_NC2018_raw.csv")
+EPAair_O3_2019 <- read.csv("~/Environmental_Data_Analytics_2021/Data/Raw/EPAair_O3_NC2019_raw.csv")
+EPAair_pm25_2018 <- read.csv("~/Environmental_Data_Analytics_2021/Data/Raw/EPAair_PM25_NC2018_raw.csv")
+EPAair_pm25_2019 <- read.csv("~/Environmental_Data_Analytics_2021/Data/Raw/EPAair_PM25_NC2019_raw.csv")
+
 #2
+
+dim(EPAair_O3_2018)
+dim(EPAair_O3_2019)
+dim(EPAair_pm25_2018)
+dim(EPAair_pm25_2019)
+
+colnames(EPAair_O3_2018)
+colnames(EPAair_O3_2019)
+colnames(EPAair_pm25_2018)
+colnames(EPAair_pm25_2019)
+
+str(EPAair_O3_2018)
+str(EPAair_O3_2019)
+str(EPAair_pm25_2018)
+str(EPAair_pm25_2019)
+
 ```
 
 ## Wrangle individual datasets to create processed files.
@@ -38,11 +63,29 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 ```{r}
 #3
 
+EPAair_O3_2018$Date <- as.Date(EPAair_O3_2018$Date, format = "%m/%d/%Y")
+EPAair_O3_2019$Date <- as.Date(EPAair_O3_2019$Date, format = "%m/%d/%Y")
+EPAair_pm25_2018$Date <- as.Date(EPAair_pm25_2018$Date, format = "%m/%d/%Y")
+EPAair_pm25_2019$Date <- as.Date(EPAair_pm25_2019$Date, format = "%m/%d/%Y")
+
 #4
+
+EPAair_O3_2018.tidy <- select(EPAair_O3_2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_O3_2019.tidy <- select(EPAair_O3_2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_pm25_2018.tidy <- select(EPAair_pm25_2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+EPAair_pm25_2019.tidy <- select(EPAair_pm25_2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 #5
 
+EPAair_pm25_2018.tidy$AQS_PARAMETER_DESC[EPAair_pm25_2018.tidy$AQS_PARAMETER_DESC != "x"] <- "PM2.5"
+EPAair_pm25_2019.tidy$AQS_PARAMETER_DESC[EPAair_pm25_2019.tidy$AQS_PARAMETER_DESC != "x"] <- "PM2.5"
+
 #6
+
+write.csv(EPAair_O3_2018.tidy, row.names = FALSE, file = "~/Environmental_Data_Analytics_2021/Data/Processed/EPAair_O3_NC2018_processed.csv")
+write.csv(EPAair_O3_2019.tidy, row.names = FALSE, file = "~/Environmental_Data_Analytics_2021/Data/Processed/EPAair_O3_NC2019_processed.csv")
+write.csv(EPAair_pm25_2018.tidy, row.names = FALSE, file = "~/Environmental_Data_Analytics_2021/Data/Processed/EPAair_pm25_NC2018_processed.csv")
+write.csv(EPAair_pm25_2019.tidy, row.names = FALSE, file = "~/Environmental_Data_Analytics_2021/Data/Processed/EPAair_pm25_NC2019_processed.csv")
 
 ```
 
@@ -63,13 +106,33 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 ```{r}
 #7
 
+EPAair.bind <- rbind(EPAair_O3_2018.tidy, EPAair_O3_2019.tidy, EPAair_pm25_2018.tidy, EPAair_pm25_2019.tidy)
+
 #8
+
+EPAair <- 
+  EPAair.bind %>%
+  filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School", "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>%
+  droplevels() %>%
+  group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+  summarise(meanAQI = mean(DAILY_AQI_VALUE),
+             meanLat = mean(SITE_LATITUDE),
+             meanLong = mean(SITE_LONGITUDE)) %>% # confused on why the output aren't all the same values
+  mutate(month = month(Date)) %>%
+  mutate(year = year(Date))
+  )
 
 #9
 
+EPAair.spread <- pivot_wider(EPAair, names_from = AQS_PARAMETER_DESC, values_from = meanAQI)
+
 #10
 
+dim(EPAair.spread)
+
 #11
+
+write.csv(EPAair.spread, row.names = FALSE, file = "~/Environmental_Data_Analytics_2021/Data/Processed/EPAair_O3_PM25_NC1718_Processed.csv")
 
 ```
 
@@ -82,12 +145,23 @@ The completed exercise is due on Tuesday, Feb 16 @ 11:59pm.
 ```{r}
 #12a
 
+EPAair.summary <- 
+  EPAair.spread %>%
+  group_by(Site.Name, month, year) %>%
+  summarise(meanAQI_ozone = mean(Ozone),
+            meanAQI_PM2.5 = mean(PM2.5))
+
 #12b
 
+EPAair.summary %>% drop_na(month)
+EPAair.summary %>% drop_na(year)
+
 #13
+
+dim(EPAair.summary)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: drop_na wil remove rows where the values in the specified column where NA whereas na.omit would display the data set without those rows but the dimensions would be the original size because they weren't technically dropped.
