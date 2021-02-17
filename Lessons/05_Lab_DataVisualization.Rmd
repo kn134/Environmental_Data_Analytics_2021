@@ -60,6 +60,15 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
 
+P.P.surface <- PeterPaul.chem.nutrients %>%
+  filter(depth == 0)
+
+Temp.plot <- ggplot(P.P.surface, aes(x = daynum, y = temperature_C, color = year4)) +
+  geom_point() +
+  labs(y = "Surface Temperature") +
+  facet_wrap(vars(lakename), nrow = 2)
+print(Temp.plot)
+
 
 #2. 
 # Plot temperature by date. Color your points by depth.
@@ -67,7 +76,11 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
 
+P.P.temperature <- ggplot(PeterPaul.chem.nutrients, aes(x=sampledate, y=temperature_C, color = depth)) + geom_point(size=.5) + scale_color_viridis(option = "magma", direction = -1)
 
+print(P.P.temperature)
+  
+  ### see if changing dot size is different when it's within geom_point (hint: probably)
 
 
 ```
@@ -82,7 +95,7 @@ Exercise: Plot relationships between air quality measurements
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
 
-
+plot.aqi = ggplot(PeterPaul.chem.nutrients, aes(x=))
 
 
 ```
