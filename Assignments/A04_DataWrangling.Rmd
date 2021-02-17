@@ -120,7 +120,6 @@ EPAair <-
              meanLong = mean(SITE_LONGITUDE)) %>% # confused on why the output aren't all the same values
   mutate(month = month(Date)) %>%
   mutate(year = year(Date))
-  )
 
 #9
 
