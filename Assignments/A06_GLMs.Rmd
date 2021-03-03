@@ -200,3 +200,5 @@ TukeyHSD(ChemPhys.anova)
 
 >Answer: The HSD Test can help see if there are any pair-wise relationships and further explore if Peter Lake and Paul lake have distinct mean temperatures.
 
+> author's note: This assignment was complete before deadline, as seen by the github knit date, but due to continued issues with github communicating with my shared drive, was unable to upload PDF until lab.
+
