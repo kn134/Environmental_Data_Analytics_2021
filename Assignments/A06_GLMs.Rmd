@@ -1,6 +1,6 @@
 ---
 title: "Assignment 7: GLMs (Linear Regressios, ANOVA, & t-tests)"
-author: "Student Name"
+author: "Karly Nocera"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -27,10 +27,24 @@ The completed exercise is due on Tuesday, March 2 at 1:00 pm.
 
 ```{r setup}
 #1
+getwd()
+library(tidyverse)
+library(agricolae)
+library(lubridate)
+library(viridis)
 
+ChemPhys <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
+
+class(ChemPhys$sampledate)
+ChemPhys$sampledate <- ymd(ChemPhys$sampledate)
 
 #2
 
+mytheme <- theme_classic(base_size = 10, base_family = "sans") +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
+
+theme_set(mytheme)
 
 ```
 
@@ -39,8 +53,8 @@ Our first research question is: Does mean lake temperature recorded during July 
 
 3. State the null and alternative hypotheses for this question:
 > Answer:
-H0: 
-Ha: 
+H0: The change in mean lake temperatures recorded during July across all lakes is zero.
+Ha: The change in mean lake temperatures recorded during July across all lakes is different than zero.
 
 
 4.  Wrangle your NTL-LTER dataset with a pipe function so that the records meet the following criteria: 
@@ -53,22 +67,38 @@ Ha:
 ```{r scatterplot}
 #4
 
+ChemPhys <-
+  ChemPhys %>%
+  mutate(month = month(sampledate)) %>%
+  filter(month == 7) %>%
+  select(lakename, year4, daynum, depth, temperature_C) %>%
+  drop_na()
 
 #5
 
+tempvdepth <-
+  ggplot(ChemPhys, aes(x = temperature_C, y = depth, color = depth)) +
+  geom_point() +
+  scale_y_reverse() +
+  xlim(0, 35) +
+  xlab(expression("Temperature (C)")) +
+  geom_smooth(method = lm) +
+  scale_color_viridis(direction = -1)
+print(tempvdepth)
 
 ```
 
 
 6. Interpret the figure. What does it suggest with regards to the response of temperature to depth? Do the distribution of points suggest about anything about the linearity of this trend?
 
-> Answer: 
+> Answer: This figure suggests that shallower depths are associated with warmer temperatures and depper depths with colder temperatures. The distribution of points suggest this may be an exponential rather than linear function, as there are diminishing returns as temperature increases and there is a threshold at which deeper depths are not associated with colder temperatures. 
 
 
 7. Perform a linear regression to test the relationship and display the results
 
 ```{r linear.regression}
 #7
+
 
 
 ```
