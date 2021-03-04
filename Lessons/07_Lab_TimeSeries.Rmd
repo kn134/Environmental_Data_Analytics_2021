@@ -56,9 +56,9 @@ Temp_BR <- read.csv("./Data/Raw/tas_1901_2016_BRA.csv", stringsAsFactors = TRUE)
 Rainfall_BR_processed <-
   Rainfall_BR %>% 
   rename( Rainfall = Rainfall....MM.) %>% 
-  separate(Statistics,c("Null","Month","Null2")," ") %>% 
-  mutate( Date = my(paste0(Month,"-",Year))) %>% 
-  select(Date,Rainfall)
+  separate(Statistics,c("Null","Month","Null2")," ") %>% #separating column stats into 3 columns; " " specificies the separater of a space
+  mutate( Date = my(paste0(Month,"-",Year))) %>% #month year my
+  select(Date, Rainfall)
 
 #Exercise 3: Repeat exercise 2 to the temperature dataset.
 Temp_BR_processed <-
