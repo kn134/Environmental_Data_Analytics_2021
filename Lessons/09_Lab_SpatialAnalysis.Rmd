@@ -72,6 +72,8 @@ counties_sf<- st_read('./Data/Spatial/cb_2018_us_county_20m.shp') %>%
 
 #
 mapView(counties_sf, zcol = "AWATER")
+
+
 ```
 
 ### EXERCISE 2.2.1: Read in and explore 8-digit HUC watersheds for NC
@@ -81,6 +83,13 @@ mapView(counties_sf, zcol = "AWATER")
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
 
+
+huc8_sf2 <- st_read("./Data/Spatial/NCHUC8.shp") %>%
+  filter(SUBBASIN=="Upper Neuse")
+
+### see screenshot
+
+mapview(list(huc8_sf, huc8_sf2), col.regions=list("orange", "purple"))
 
 
 #View the data as a map, colored by the acreage in each
