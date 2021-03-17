@@ -36,7 +36,7 @@ The completed exercise is due on Tuesday, March 16 at 11:59 pm.
 getwd()
 
 ## load packages
-library(dplyr)
+library(plyr)
 library(tidyverse)
 library(lubridate)
 library(trend) #run stationary test
@@ -59,6 +59,7 @@ OzoneFiles
 
 GaringerOzone <- OzoneFiles %>%
   ldply(read.csv)
+
 ```
 
 ## Wrangle
@@ -88,7 +89,7 @@ colnames(Days) <- c("Date")
 
 # 6
 
-GaringerOzone <- left_join(GaringerOzone, Days)
+GaringerOzone <- left_join(Days, GaringerOzone) #first entry is the rows
 
 ```
 
@@ -118,13 +119,12 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 #8
 
 summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
-#shows no NAs
 
 GaringerOzone_clean <- 
   GaringerOzone %>%
-  mutate(Daily.Max.8.hour.Ozone.Concentration.clean = zoo::na.approx(Daily.Max.8.hour.Ozone.Concentration))
+  mutate(Daily.Max.8.hour.Ozone.Concentration = zoo::na.approx(Daily.Max.8.hour.Ozone.Concentration))
 
-summary(GaringerOzone_clean$Daily.Max.8.hour.Ozone.Concentration.clean)
+summary(GaringerOzone_clean$Daily.Max.8.hour.Ozone.Concentration)
 
 ```
 
@@ -137,11 +137,12 @@ summary(GaringerOzone_clean$Daily.Max.8.hour.Ozone.Concentration.clean)
 #9
 
 # only getting one value despite grouping by month
-# GaringerOzone.monthly1 <-
-  GaringerOzone %>%
-  mutate(year = year(Date), month = month(Date)) %>%
-  group_by(month) %>%
-  summarize(mean_ozone = mean(Daily.Max.8.hour.Ozone.Concentration))
+GaringerOzone.monthly1 <-
+  GaringerOzone_clean %>%
+  separate(Date, c("Year", "Month", "Day", "-")) %>%
+  group_by(Month, Year) %>%
+  summarise(mean_ozone = mean(Daily.Max.8.hour.Ozone.Concentration))
+
 
 # using this dataset instead
 GaringerOzone <-
@@ -152,6 +153,13 @@ GaringerOzone.monthly <-
   aggregate( Daily.Max.8.hour.Ozone.Concentration ~ month, GaringerOzone, mean)
 
 colnames(GaringerOzone.monthly) <- c("month", "month_avg_ozone")
+
+
+year = year(Date), month = month(Date)
+
+
+
+
 
 # for graphing purposes, create a new Date column with each month-year combination being set as the first day of the month
 GaringerOzone.combo <-
