@@ -31,7 +31,6 @@ output:
     + Chunk options allow for flexibility when the code runs and when the document is knitted
 3. **Text** with formatting options for readability in knitted document
 
-
 ## RESOURCES
 
 Handy cheat sheets for R markdown can be found: [here](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf), and [here](https://raw.githubusercontent.com/rstudio/cheatsheets/master/rmarkdown-2.0.pdf).
@@ -63,7 +62,11 @@ See: <https://rmarkdown.rstudio.com> and class recording.
 
 ## WHY R MARKDOWN?
 
-<Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).> 
+<Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).>  
+
+* R markdown is limited to ~~one language~~ **many languages**
+* To create a line break, add new line space in between
+* Help >> Markdown Quick Guide (file/edit/code bar, not right hand side Help tab)
 
 
 ## TEXT EDITING CHALLENGE
@@ -86,6 +89,26 @@ Load the NTL-LTER_Lake_Nutrients_Raw dataset, display the head of the dataset, a
 
 Customize the chunk options such that the code is run but is not displayed in the final document.
 
+```{r setup, message=FALSE, echo=FALSE}
+
+getwd()
+
+library(tidyverse)
+library(lubridate)
+library(knitr)
+
+mytheme <- theme_classic()  +
+    theme(axis.text = element_text(color = 'black'),
+          legend.position = 'top')
+theme_set(mytheme)
+
+nutrients <- read.csv("./Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv")
+head(nutrients)
+nutrients$sampledate <- mdy(nutrients$sampledate)
+
+```
+
+
 
 ### Data Exploration, Wrangling, and Visualization
 
@@ -100,6 +123,18 @@ Create a second R chunk to create a summary dataset with the mean, minimum, maxi
 Create a third R chunk that uses the function `kable` in the knitr package to display two tables: one for the summary dataframe for total N and one for the summary dataframe of total P. Use the `caption = " "` code within that function to title your tables. Customize the chunk options such that the final table is displayed but not the code used to generate the table.
 
 Create a fourth and fifth R chunk that generates two plots (one in each chunk): one for total N over time with different colors for each lake, and one with the same setup but for total P. Decide which geom option will be appropriate for your purpose, and select a color palette that is visually pleasing and accessible. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, customize the chunk options such that the figures are aligned on the left side of the page. Lastly, add a fig.cap chunk option to add a caption (title) to your plot that will display underneath the figure.
+
+
+```{r}
+
+nutrient_processed <-
+    nutrients %>%
+    
+
+
+
+```
+
 
 
 ### Communicating results
