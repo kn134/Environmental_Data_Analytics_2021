@@ -1,6 +1,6 @@
 ---
 title: '11: Crafting Reports'
-author: Environmental Data Analytics | John Fay & Luana Lima | Developed by Kateri Salk
+author: "Karly Nocera"
 date: "Spring 2021"
 output:
  pdf_document: default
@@ -65,20 +65,35 @@ See: <https://rmarkdown.rstudio.com> and class recording.
 <Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets or `Help` →`Markdown Quick Reference` to figure out how to make bold and italic text).>  
 
 * R markdown is limited to ~~one language~~ **many languages**
-* To create a line break, add new line space in between
-* Help >> Markdown Quick Guide (file/edit/code bar, not right hand side Help tab)
+* Easier for organizting thoughts and separating context from script
+* Tidier way to share code and results with others
+* Easier user interface (*mostly*)
+* No need to constantly **re-run** code from the beginning
+* *Helpful* To create a line break, add new line space in between
+* *Helpful* To find the guide: Help >> Markdown Quick Guide (file/edit/code bar, not right hand side Help tab)
 
 
 ## TEXT EDITING CHALLENGE
 
 Create a table below that details the example datasets we have been using in class. The first column should contain the names of the datasets and the second column should include some relevant information about the datasets. (Hint: use the cheat sheets to figure out how to make a table in Rmd)
 
+Dataset Names | Information
+--------------|-------------
+EPAair_O3_NC2018_raw|2018 EPA air samples of ozone levels in North Carolina
+NTL-LTER_Lake_Carbon_Raw|Water data on dissolved organic and inorganic carbon, particulate organic matter, CO2, etc.
+NWIS_SiteFlowData_NE_Raw|Water gage heights at different sample sites
 
 ## R CHUNK EDITING CHALLENGE
 
 ### Installing packages
 
 Create an R chunk below that installs the package `knitr`. Instead of commenting out the code, customize the chunk options such that the code is not evaluated (i.e., not run).
+
+```{r install, eval = FALSE}
+
+install.packages("knitr")
+
+```
 
 
 ### Setup
@@ -102,7 +117,7 @@ mytheme <- theme_classic()  +
           legend.position = 'top')
 theme_set(mytheme)
 
-nutrients <- read.csv("./Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv")
+nutrients <- read.csv("../Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv")
 head(nutrients)
 nutrients$sampledate <- mdy(nutrients$sampledate)
 
@@ -125,21 +140,134 @@ Create a third R chunk that uses the function `kable` in the knitr package to di
 Create a fourth and fifth R chunk that generates two plots (one in each chunk): one for total N over time with different colors for each lake, and one with the same setup but for total P. Decide which geom option will be appropriate for your purpose, and select a color palette that is visually pleasing and accessible. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, customize the chunk options such that the figures are aligned on the left side of the page. Lastly, add a fig.cap chunk option to add a caption (title) to your plot that will display underneath the figure.
 
 
-```{r}
+```{r processed}
 
-nutrient_processed <-
+nutrients_processed <-
     nutrients %>%
-    
-
-
+    select(lakename:sampledate, depth:po4) %>%
+    filter(depth == 0) %>%
+    drop_na()
 
 ```
 
+```{r summary, echo=FALSE}
 
+# FOR EACH LAKE -- ASK FOR HELP
+
+#Summary Stats (mean, minimum, maximum, and standard deviation): total nitrogen
+
+nutrients_sum_tn <-
+    nutrients_processed %>%
+    summarise(meanTN = mean(tn_ug),
+              minTN = min(tn_ug),
+              maxTN = max(tn_ug),
+              sdTN = sd(tn_ug))
+
+#Summary Stats: total phosphorus 
+
+nutrients_sum_tp <-
+    nutrients_processed %>%
+    summarise(meanTP = mean(tp_ug),
+              minTP = min(tp_ug),
+              maxTP = max(tp_ug),
+              sdTP = sd(tp_ug))
+
+```
+
+```{r kable, echo=FALSE}
+
+kable(nutrients_sum_tn,
+      col.names = c('Mean', 'Min', 'Max', 'Standard Deviation'),
+      caption = "Total Nitrogen Summary Statistics")
+
+kable(nutrients_sum_tp,
+      col.names = c('Mean', 'Min', 'Max', 'Standard Deviation'),
+      caption = "Total Phosphorous Summary Statistics")
+
+```
+
+```{r plotN, echo=FALSE, fig.align = 'left', fig.cap = "Total Nitrogen by Lake Over Time"}
+
+#basic time series
+TNplot <-
+    ggplot(nutrients_processed, aes(x = sampledate, y = tn_ug, color=lakename)) +
+    geom_line() +
+    ylab(expression("Total Nitrogen (ug/L)")) +
+    xlab(expression("Date")) +
+    labs(color="Lake Name")
+
+#time series split by lake
+TNplot_wrap <-
+    ggplot(nutrients_processed, aes(x = sampledate, y = tn_ug, color=lakename)) +
+    geom_line() +
+    facet_wrap(vars(lakename), nrow = 4) +
+    ylab(expression("Total Nitrogen (ug/L)")) +
+    xlab(expression("Date")) +
+    labs(color="Lake Name")
+
+#time series split by lake and date to see unique trends by year
+nutrients_month <-
+    nutrients_processed %>%
+    mutate(month = month(sampledate))
+
+TNplot_wrapyear <-
+    ggplot(nutrients_month, aes(x = month, y = tn_ug, color=lakename)) +
+    geom_line() +
+    facet_grid(lakename ~ year4) +
+    theme(strip.text.y = element_blank()) +
+    ylab(expression("Total Nitrogen (ug/L)")) +
+    xlab(expression("Month")) +
+    labs(color="Lake Name")
+
+# print all 3 graphs
+print(TNplot)
+print(TNplot_wrap)
+print(TNplot_wrapyear)
+
+```
+```{r plotP, echo=FALSE, fig.align = 'left', fig.cap = "Total Phosphorous by Lake Over Time"}
+
+#time series
+TPplot <-
+    ggplot(nutrients_processed, aes(x = sampledate, y = tp_ug, color=lakename)) +
+    geom_line() +
+    ylab(expression("Total Phosphorous (ug/L)")) +
+    xlab(expression("Date")) +
+    labs(color="Lake Name")
+
+#time series split by lake
+TPplot_wrap <-
+    ggplot(nutrients_processed, aes(x = sampledate, y = tp_ug, color=lakename)) +
+    geom_line() +
+    facet_wrap(vars(lakename), nrow = 4) +
+    ylab(expression("Total Phosphorous (ug/L)")) +
+    xlab(expression("Date")) +
+    labs(color="Lake Name")
+
+#time series split by lake and date to see unique trends by year
+TPplot_wrapyear <-
+    ggplot(nutrients_month, aes(x = month, y = tp_ug, color=lakename)) +
+    geom_line() +
+    facet_grid(lakename ~ year4) +
+    theme(strip.text.y = element_blank()) +
+    ylab(expression("Total Phosphorous (ug/L)")) +
+    xlab(expression("Month")) +
+    labs(color="Lake Name")
+
+# print all 3 graphs
+print(TPplot)
+print(TPplot_wrap)
+print(TPplot_wrapyear)
+
+```
 
 ### Communicating results
 
 Write a paragraph describing your findings from the R coding challenge above. This should be geared toward an educated audience but one that is not necessarily familiar with the dataset. Then insert a horizontal rule below the paragraph. Below the horizontal rule, write another paragraph describing the next steps you might take in analyzing this dataset. What questions might you be able to answer, and what analyses would you conduct to answer those questions?
+
+> The first set of basic time series graphs illustrates that total nitrogen seems to be less variable over time than total phosphorous. This pattern is further emphasized in the facet grid graphs where it visualizes the pattern for each lake by year: with few exceptions (such as 1996 and West Long Lake) nitrogen levels remain fairly constant throughout the year with slight elevations near the end of summer; in contrast, phosphorous levels show a variety of temporal trends depending on their year and lake, however it does appear that its levels increase tend to increase with warmer temperatures (later in the summer). Lastly, the facet wrap graphs demonstrate that East Long, West Long, and Peter Lakes experience significantly more variability in nitrogren and phosphorous over the years than the others, although it is worth noting that there is insufficient data samples to make this assessment of Crampton and Hummingbird Lakes.   
+----
+The next steps in analyzing this dataset should include corresponding temperature and gage heights to answer whether weather and storm events can explain some of these trends. Specifically, running regressions to identify correlations, establish an ordinary least squares best fit line, and test for joint correlations can be conducted to answer these questions. This output will also indicate the strength of our model and indicate whether there are omitted variables that we have not considered. 
 
 
 ## KNIT YOUR PDF
