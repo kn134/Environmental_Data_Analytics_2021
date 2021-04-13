@@ -225,6 +225,7 @@ print(TNplot_wrap)
 print(TNplot_wrapyear)
 
 ```
+
 ```{r plotP, echo=FALSE, fig.align = 'left', fig.cap = "Total Phosphorous by Lake Over Time"}
 
 #time series
